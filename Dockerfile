@@ -17,4 +17,4 @@ RUN pip install -r requirements.txt
 COPY . /app/
 
 # Команда для запуска приложения
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uvicorn", "main_app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
