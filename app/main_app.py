@@ -1,11 +1,16 @@
 import uvicorn
+import asyncio
 
-# from constants import BOOKS
+from constants import BOOKS
 from fastapi import FastAPI
 
 
 def create_app():
     app = FastAPI(docs_url='/')
+
+    def read_file(file_path):
+        with open(file_path, 'r') as file:
+            return file.readlines()
 
     @app.on_event("startup")
     async def startup_event():
@@ -13,13 +18,19 @@ def create_app():
         pass
 
     @app.get("/qwerty")
-    async def read_root():
-        return {"message": "Hello, World!"}
+    async def sending_data():
+        content = read_file(BOOKS)
+        # отправлять данные в топик брокера сообщение вида {"datetime": "15.11.2023 15:00:25.001", "title": "Very fun book", "text": "...Rofl...lol../n..ololo..." }
+        for i in content:
+            await asyncio.sleep(1)
+            print(i)
+
+        return content
 
     return app
 
 
-def main():
+async def main():
     uvicorn.run(
         f"{main_app}:create_app",
         host='0.0.0.0', port=8888,
@@ -28,4 +39,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
