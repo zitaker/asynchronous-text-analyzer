@@ -1,31 +1,47 @@
 import uvicorn
 import asyncio
+import json
+import aioredis
 
 from constants import BOOKS
 from fastapi import FastAPI
 
-
 def create_app():
     app = FastAPI(docs_url='/')
+
+    async def send_hello_world():
+        # Подключение к серверу Redis
+        redis = await aioredis.create_redis('redis://127.0.0.1:6379')
+
+        try:
+            # Отправка сообщения "hello world" в ключ "my_key"
+            await redis.set('my_key', 'hello world')
+
+            # Получение значения из ключа "my_key"
+            result = await redis.get('my_key')
+            print(f'Received from Redis: {result.decode()}')
+        finally:
+            # Закрытие соединения с сервером Redis
+            redis.close()
+            await redis.wait_closed()
 
     def read_file(file_path):
         with open(file_path, 'r') as file:
             return file.readlines()
 
+
+
     @app.on_event("startup")
     async def startup_event():
+        return send_hello_world()
         # Логика, которая выполняется при старте приложения
-        pass
+        # pass
+        # content = read_file(BOOKS)
+        # for i in content:
+        #     await asyncio.sleep(1)
+        #     print(i)
 
-    @app.get("/qwerty")
-    async def sending_data():
-        content = read_file(BOOKS)
-        # отправлять данные в топик брокера сообщение вида {"datetime": "15.11.2023 15:00:25.001", "title": "Very fun book", "text": "...Rofl...lol../n..ololo..." }
-        for i in content:
-            await asyncio.sleep(1)
-            print(i)
 
-        return content
 
     return app
 
