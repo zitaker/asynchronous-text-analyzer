@@ -1,33 +1,30 @@
 from constants import BOOKS
 
-# Укажите путь к вашему файлу
-file_path = BOOKS
 
-# Открываем файл на чтение
-with open(file_path, 'r', encoding='utf-8') as file:
-    # Читаем все строки файла
-    lines = file.readlines()
+def create_dictionary(file_path):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        file_contents = file.read()
 
-# Ищем заголовки с двумя пустыми строками после них
-index = 0
-while index < len(lines):
-    # Если строка является заголовком
-    if lines[index].strip():
-        print(f'Заголовок: {lines[index].strip()}')
+    list_books = file_contents.split('\n\n\n\n\n\n')
+#
+    dictionary = []
+    for elems in list_books:
 
-        # Ищем две пустые строки после заголовка
-        index += 1  # Переходим к следующей строке
-        empty_line_count = 0
+        lines = elems.split('\n')
 
-        while index < len(lines) and empty_line_count < 2:
-            if not lines[index].strip():
-                empty_line_count += 1
-            else:
-                empty_line_count = 0  # Сбрасываем счетчик, если найдена не пустая строка
-            index += 1  # Переходим к следующей строке
+        title1 = lines[0].strip()
+        title = title1.replace('\ufeff', '')
 
-        # Выводим две пустые строки
-        print()
-    else:
-        index += 1  # Переходим к следующей строке
+        body2 = '\n'.join(lines[1:]).strip()
+        body1 = body2.replace('\xa0', ' ')
+        body = body1.replace('\n', ' ')
 
+        data = {"title": title, "text": body}
+
+        dictionary.append(data)
+    return dictionary
+
+
+
+
+print(create_dictionary(BOOKS))
