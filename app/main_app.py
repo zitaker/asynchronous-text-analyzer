@@ -1,27 +1,23 @@
 import uvicorn
 import asyncio
-import aioredis
+# import aioredis
 
-from constants import BOOKS
 from fastapi import FastAPI
-from datetime import datetime
+from broker_message import broker_message
 
 
 def create_app():
     app = FastAPI(docs_url='/')
 
-    def read_file(file_path):
-        with open(file_path, 'r') as file:
-            return file.readlines()
-
     @app.on_event("startup")
     async def startup_event():
-        # Логика, которая выполняется при старте приложения
-        # pass
-        content = read_file(BOOKS)
-        for i in content:
-            await asyncio.sleep(3)
-            print(i)
+        # # Логика, которая выполняется при старте приложения
+        # # pass
+        # content = read_file(BOOKS)
+        # for i in content:
+        #     await asyncio.sleep(3)
+        #     print(i)
+        print(broker_message())
 
 
 
