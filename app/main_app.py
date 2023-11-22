@@ -1,11 +1,11 @@
 import uvicorn
 import asyncio
-import json
 import aioredis
 
 from constants import BOOKS
 from fastapi import FastAPI
 from datetime import datetime
+
 
 def create_app():
     app = FastAPI(docs_url='/')

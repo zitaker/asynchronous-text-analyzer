@@ -22,7 +22,7 @@ def create_dictionary(file_path):
         data = {"title": title, "text": body}
 
         dictionary.append(data)
-    return dictionary
+    return dictionary[0]
 
 
 
