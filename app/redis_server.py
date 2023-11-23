@@ -8,15 +8,15 @@ async def handle(reader, writer):
         if not data:
             break
 
-        message = data.decode()
-        addr = writer.get_extra_info('peername')
-        print(f"Received {message!r} from {addr!r}")
+        # message = data.decode()
+        # addr = writer.get_extra_info('peername')
+        # print(f"Received {message!r} from {addr!r}")
 
-        print(f"Send: {message!r}")
+        # print(f"Send: {message!r}")
         writer.write(data)
         await writer.drain()
 
-        print("Closing the connection")
+        # print("Closing the connection")
         writer.close()
 
 
@@ -29,6 +29,7 @@ async def main():
 
     async with server:
         await server.serve_forever()
+
 
 if __name__ == '__main__':
     asyncio.run(main())

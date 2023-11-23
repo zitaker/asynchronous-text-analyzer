@@ -5,13 +5,26 @@ import aioredis
 
 from constants import BOOKS
 from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
 
 class MyModel(BaseModel):
-    datetime: datetime
+    datetime: str
     title: str
     text: str
+    # text: str = Field(alias='ee')
+
+async def process_all_redis_data(host, port):
+    reader, writer = await asyncio.open_connection(host, port)
+    print(reader)
+    # data = await reader.read(1024)  # Читаем до 1024 байт
+    #
+    # # Производим какие-то операции с прочитанными данными
+    # print(f"Read data: {data}")
+
+
+
+
 
 
 # ################################################
@@ -47,13 +60,12 @@ def date_time():
 
 async def send_data(host, port, data):
     reader, writer = await asyncio.open_connection(host, port)
-    print(data)
-    writer.write(json.dumps(data).encode())
-
-    # print(writer)
+    print('отправка', data)
+    # writer.write(json.dumps(data).encode())
     await writer.drain()
     writer.close()
     await writer.wait_closed()
+
 
 
 async def data_preparation(host, port, data, interval=3):
@@ -63,6 +75,7 @@ async def data_preparation(host, port, data, interval=3):
         data_to_send = json.dumps(dictionary, ensure_ascii=False)
 
         await send_data(host, port, data_to_send)
+        await process_all_redis_data(host, port)
         await asyncio.sleep(interval)
 
 
