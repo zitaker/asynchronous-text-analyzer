@@ -1,30 +1,29 @@
-from constants import BOOKS
+import asyncio
+
+import aioredis
 
 
-def create_dictionary(file_path):
-    with open(file_path, 'r', encoding='utf-8') as file:
-        file_contents = file.read()
-
-    list_books = file_contents.split('\n\n\n\n\n\n')
-#
-    dictionary = []
-    for elems in list_books:
-
-        lines = elems.split('\n')
-
-        title1 = lines[0].strip()
-        title = title1.replace('\ufeff', '')
-
-        body2 = '\n'.join(lines[1:]).strip()
-        body1 = body2.replace('\xa0', ' ')
-        body = body1.replace('\n', ' ')
-
-        data = {"title": title, "text": body}
-
-        dictionary.append(data)
-    return dictionary[0]
+async def main():
+    # Redis client bound to single connection (no auto reconnection).
+    redis = aioredis.from_url(
+        "redis://localhost", encoding="utf-8", decode_responses=True
+    )
+    async with redis.client() as conn:
+        await conn.set("my-key", "value")
+        val = await conn.get("my-key")
+    print(val)
 
 
+async def redis_pool():
+    # Redis client bound to pool of connections (auto-reconnecting).
+    redis = aioredis.from_url(
+        "redis://localhost", encoding="utf-8", decode_responses=True
+    )
+    await redis.set("my-key", "value")
+    val = await redis.get("my-key")
+    print(val)
 
 
-print(create_dictionary(BOOKS))
+if __name__ == "__main__":
+    asyncio.run(main())
+    asyncio.run(redis_pool())
