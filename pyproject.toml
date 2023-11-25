@@ -10,8 +10,9 @@ python = "3.8.10"
 fastapi = "0.104.1"
 uvicorn = "0.24.0"
 asyncio = "3.4.3"
-aioredis = "2.0.1"
+#aioredis = "2.0.1"
 pydantic = "2.5.1"
+redis = "5.0.1"
 
 [build-system]
 requires = ["poetry-core"]
