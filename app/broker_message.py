@@ -1,17 +1,18 @@
 import asyncio
 import redis
+import json
 # import pydantic
 
 from constants import BOOKS
 from datetime import datetime
-# from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, ValidationError
 
 
-# class MyModel(BaseModel):
-#     datetime: str
-#     title: str
-#     text: str
-#     # text: str = Field(alias='ee')
+class MyModel(BaseModel):
+    datetime: str
+    title: str
+    text: str
+    # text: str = Field(alias='ee')
 
 
 # ################################################
@@ -55,26 +56,39 @@ async def send_messages_to_the_broker(list_dictionary):
 
         connection = redis.Redis()
         hash_key = 'hash_key'
-        for field, value in new_dictionary.items():
-            connection.hset(hash_key, field, value)
+        encoded_message = json.dumps(new_dictionary, ensure_ascii=False).encode('utf-8')
+        connection.set(hash_key, encoded_message)
 
         await parse_from_broker_message()
 
 
 
-test_data = [{'qwer': '11'}, {'qwer': '444'}]
+test_data = [{'qwer': '11', 'ww': '22'}, {'qwer': '444', 'ww': '55'}]
 
 async def parse_from_broker_message():
     connection = redis.Redis()
-    message = connection.hgetall('hash_key')
-    print(message)
-    await asyncio.sleep(3)
+    hash_key = 'hash_key'
+    retrieved_message = connection.get(hash_key)
+    # decoded_message = json.loads(retrieved_message.decode('utf-8'))
+    #
+    # print(decoded_message)
+    # await asyncio.sleep(3)
+##############################
+    # Преобразование словаря в JSON-строку
+    # json_data = json.dumps(decoded_message, ensure_ascii=False)
+
+    # Парсинг и верификация данных с использованием Pydantic
+    try:
+        # my_data = MyModel.model_validate_json(json_data)
+        my_data = MyModel.model_validate_json(json.loads(retrieved_message.decode('utf-8')))
+        print("Parsed Data:", my_data)
+    except Exception as e:
+        print("Error:", e)
 
 
 async def main():
     # await send_data(list_of_dictionary(BOOKS))
-
-    await send_messages_to_the_broker(list_of_dictionary(BOOKS))
+    await send_messages_to_the_broker(test_data)
 
 
 if __name__ == '__main__':

@@ -1,24 +1,28 @@
-import asyncio
-import redis
+from pydantic import BaseModel
+import json
+
+class MyDataModel(BaseModel):
+    key: str
+    value: str
 
 
-async def main():
-    connection = redis.Redis()
-    hash_key = 'hash_key1'
 
-    translation_data = {
-        'hello': 'привет',
-        'world': 'мир',
-        'example': 'пример'
-    }
+# Пример словаря данных
+data_dict = {'key': 'ww', 'value': 'qa'}
 
-    connection.hset(hash_key, translation_data)
+# Преобразование словаря в JSON-строку
+# json_data = json.dumps(data_dict, ensure_ascii=False)
 
+# # Парсинг и верификация данных с использованием Pydantic
+# try:
+#     my_data = MyDataModel.model_validate_json(json_data)
+#     print("Parsed Data:", my_data)
+# except Exception as e:
+#     print("Error:", e)
 
-    english_word = 'hello'
-    russian_translation = connection.hget(hash_key, english_word)
-    print(f"{english_word}: {russian_translation}")
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
+try:
+    # my_data = MyModel.model_validate_json(json_data)
+    my_data = MyDataModel.model_validate_json(json.loads(data_dict))
+    print("Parsed Data:", my_data)
+except Exception as e:
+    print("Error:", e)
