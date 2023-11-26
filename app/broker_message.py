@@ -1,7 +1,5 @@
 import asyncio
-import json
 import redis
-# import aioredis
 # import pydantic
 
 from constants import BOOKS
@@ -18,17 +16,6 @@ from datetime import datetime
 
 # ################################################
 
-# class DataForPush:
-#     def __init__(self):
-#         self._dictionary = []
-#
-#     @property
-#     def dictionary_to_send(self):
-#         return self._dictionary.copy()
-#
-#     @dictionary_to_send.setter
-#     def dictionary_to_send(self, new_dictionary):
-#         self._dictionary = new_dictionary.copy()
 
 
 def list_of_dictionary(file_path):
@@ -60,72 +47,35 @@ def date_time():
     formatted_time = current_time.strftime("%d.%m.%Y %H:%M:%S.%f")[:-3]
     return formatted_time
 
-# def qwerty(new_dictionary):
-#     connection = redis.Redis()
-#     hash_key = 'hash_key'
-#     for field, value in new_dictionary.items():
-#         connection.hset(hash_key, field, value)
 
-async def send_data(list_dictionary):
-    # reader, writer = await asyncio.open_connection(host, port)
-    # print('отправка', data)
-    #
-    # writer.write(json.dumps(data).encode())
-    # await writer.drain()
-    # writer.close()
-    # await writer.wait_closed()
-
-
-    # obj = DataForPush()
-    obj = []
-
+async def send_messages_to_the_broker(list_dictionary):
     for dictionary in list_dictionary:
-        # await asyncio.sleep(3)
         time_dictionary = {"datetime": date_time()}
         new_dictionary = {**time_dictionary, **dictionary}
-        # data_to_send = json.dumps(new_dictionary, ensure_ascii=False)
-            # for key, value in new_dictionary.items():
-            #     obj[key] = value
-        obj.append(new_dictionary)
 
-    # print(obj)
-    connection = redis.Redis()
-    for i in obj:
+        connection = redis.Redis()
         hash_key = 'hash_key'
-        for field, value in i.items():
+        for field, value in new_dictionary.items():
             connection.hset(hash_key, field, value)
 
+        await parse_from_broker_message()
 
 
-test_data = [{'qwer': '11', 'asdf': '222'}, {'qaz': '444', 'wsx': '55'}]
+
+test_data = [{'qwer': '11'}, {'qwer': '444'}]
+
+async def parse_from_broker_message():
+    connection = redis.Redis()
+    message = connection.hgetall('hash_key')
+    print(message)
+    await asyncio.sleep(3)
+
 
 async def main():
     # await send_data(list_of_dictionary(BOOKS))
-    await send_data(test_data)
-    connection = redis.Redis()
-    print(connection.hgetall('hash_key'))
-    # await asyncio.sleep(3)
+
+    await send_messages_to_the_broker(list_of_dictionary(BOOKS))
 
 
 if __name__ == '__main__':
     asyncio.run(main())
-
-
-# connection = redis.Redis()
-
-# hash_key = 'hash_key'
-
-# data = {
-#     "name": "John Doe",
-#     "age": 30,
-#     "email": "john.doe@example.com"
-# }
-
-# Отправка данных в Redis хеш
-# for field, value in data.items():
-#     connection.hset(hash_key, field, value)
-
-# получение данных
-# print(connection.hgetall('hash_key'))
-
-
