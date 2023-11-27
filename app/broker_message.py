@@ -1,14 +1,15 @@
 import asyncio
 import redis
 import json
-# import pydantic
 
 from constants import BOOKS
 from datetime import datetime
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel
+
+test_data = [{'title': '11', 'text': '22'}, {'title': '444', 'text': '55'}]
 
 
-class MyModel(BaseModel):
+class MyModelDictionary(BaseModel):
     datetime: str
     title: str
     text: str
@@ -16,9 +17,6 @@ class MyModel(BaseModel):
 
 
 # ################################################
-
-
-
 def list_of_dictionary(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         file_contents = file.read()
@@ -62,33 +60,24 @@ async def send_messages_to_the_broker(list_dictionary):
         await parse_from_broker_message()
 
 
-
-test_data = [{'qwer': '11', 'ww': '22'}, {'qwer': '444', 'ww': '55'}]
-
 async def parse_from_broker_message():
     connection = redis.Redis()
     hash_key = 'hash_key'
     retrieved_message = connection.get(hash_key)
-    # decoded_message = json.loads(retrieved_message.decode('utf-8'))
-    #
-    # print(decoded_message)
-    # await asyncio.sleep(3)
-##############################
-    # Преобразование словаря в JSON-строку
-    # json_data = json.dumps(decoded_message, ensure_ascii=False)
+    decoded_message = json.loads(retrieved_message.decode('utf-8'))
 
-    # Парсинг и верификация данных с использованием Pydantic
+    json_data = json.dumps(decoded_message, ensure_ascii=False)
     try:
-        # my_data = MyModel.model_validate_json(json_data)
-        my_data = MyModel.model_validate_json(json.loads(retrieved_message.decode('utf-8')))
-        print("Parsed Data:", my_data)
+        my_data = MyModelDictionary.model_validate_json(json_data)
+        print(my_data)
+        await asyncio.sleep(3)
     except Exception as e:
         print("Error:", e)
 
 
 async def main():
     # await send_data(list_of_dictionary(BOOKS))
-    await send_messages_to_the_broker(test_data)
+    await send_messages_to_the_broker(list_of_dictionary(BOOKS))
 
 
 if __name__ == '__main__':

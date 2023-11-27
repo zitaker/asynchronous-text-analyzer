@@ -12,12 +12,12 @@ def create_app():
     @app.on_event("startup")
     async def startup_event():
         # # Логика, которая выполняется при старте приложения
-        # # pass
+        pass
         # content = read_file(BOOKS)
         # for i in content:
         #     await asyncio.sleep(3)
         #     print(i)
-        print(broker_message())
+        # print(broker_message())
 
 
 
