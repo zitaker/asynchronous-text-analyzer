@@ -6,7 +6,7 @@ from constants import BOOKS
 from datetime import datetime
 from pydantic import BaseModel
 
-test_data = [{'title': '11', 'text': '22'}, {'title': '444', 'text': '55'}]
+test_data = [{'title': '11', 'text': 'wd er xx jwefx'}, {'title': '444', 'text': 'xwefX'}]
 
 
 class MyModelDictionary(BaseModel):
@@ -77,8 +77,7 @@ async def parse_from_broker_message():
 
 async def main():
     # await send_data(list_of_dictionary(BOOKS))
-    await send_messages_to_the_broker(list_of_dictionary(BOOKS))
-
+    await send_messages_to_the_broker(test_data)
 
 if __name__ == '__main__':
     asyncio.run(main())
