@@ -2,21 +2,18 @@ import asyncio
 import redis
 import json
 
+# from app.constants import BOOKS
 from constants import BOOKS
 from datetime import datetime
 from pydantic import BaseModel
-
-test_data = [{'title': '11', 'text': 'wd er xx jwefx'}, {'title': '444', 'text': 'xwefX'}]
 
 
 class MyModelDictionary(BaseModel):
     datetime: str
     title: str
     text: str
-    # text: str = Field(alias='ee')
 
 
-# ################################################
 def list_of_dictionary(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         file_contents = file.read()
@@ -76,7 +73,7 @@ async def parse_from_broker_message():
     json_data = json.dumps(decoded_message, ensure_ascii=False)
     try:
         my_data = MyModelDictionary.model_validate_json(json_data)
-        # print(my_data)
+
         print(my_data.datetime)
         print(my_data.title)
         print(search_char_x(my_data))
@@ -85,9 +82,8 @@ async def parse_from_broker_message():
         print("Error:", e)
 
 
-async def main():
-    # await send_data(list_of_dictionary(BOOKS))
+async def load():
     await send_messages_to_the_broker(list_of_dictionary(BOOKS))
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    asyncio.run(load())

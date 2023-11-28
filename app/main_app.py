@@ -1,9 +1,8 @@
 import uvicorn
 import asyncio
-# import aioredis
 
 from fastapi import FastAPI
-from broker_message import broker_message
+from app.broker_message import load
 
 
 def create_app():
@@ -11,15 +10,7 @@ def create_app():
 
     @app.on_event("startup")
     async def startup_event():
-        # # Логика, которая выполняется при старте приложения
-        pass
-        # content = read_file(BOOKS)
-        # for i in content:
-        #     await asyncio.sleep(3)
-        #     print(i)
-        # print(broker_message())
-
-
+        load()
 
     return app
 
