@@ -60,6 +60,13 @@ async def send_messages_to_the_broker(list_dictionary):
         await parse_from_broker_message()
 
 
+def search_char_x(text):
+    my_text = text.text
+    search_char = 'х'
+    count_x = my_text.upper().count(search_char.upper())
+    return count_x
+
+
 async def parse_from_broker_message():
     connection = redis.Redis()
     hash_key = 'hash_key'
@@ -69,7 +76,10 @@ async def parse_from_broker_message():
     json_data = json.dumps(decoded_message, ensure_ascii=False)
     try:
         my_data = MyModelDictionary.model_validate_json(json_data)
-        print(my_data)
+        # print(my_data)
+        print(my_data.datetime)
+        print(my_data.title)
+        print(search_char_x(my_data))
         await asyncio.sleep(3)
     except Exception as e:
         print("Error:", e)
@@ -77,7 +87,7 @@ async def parse_from_broker_message():
 
 async def main():
     # await send_data(list_of_dictionary(BOOKS))
-    await send_messages_to_the_broker(test_data)
+    await send_messages_to_the_broker(list_of_dictionary(BOOKS))
 
 if __name__ == '__main__':
     asyncio.run(main())
