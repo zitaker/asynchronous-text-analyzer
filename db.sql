@@ -1,0 +1,9 @@
+--DROP TABLE IF EXISTS book;
+
+CREATE TABLE book (
+    datetime VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    text VARCHAR(255) NOT NULL
+);
+
+SELECT * FROM book;

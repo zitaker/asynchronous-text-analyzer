@@ -1,40 +1,40 @@
-import json
-from pydantic import BaseModel, Field
+import psycopg2
+import os
 
 
-class MyDataModel(BaseModel):
-    datetime: str
-    title: str
-    text: str
+DATABASE_URL = os.getenv('DATABASE_URL')
 
 
-# Пример словаря данных
-data_dict = {'datetime': '27.11.2023 16:23:11.086', 'title': '11', 'text': 'ххХХ цуа Х'}
-def qwerty():
-    # Преобразование словаря в JSON-строку
-    json_data = json.dumps(data_dict, ensure_ascii=False)
+conn = psycopg2.connect(DATABASE_URL)
 
-    # Парсинг и верификация данных с использованием Pydantic
-    try:
-        my_data = MyDataModel.model_validate_json(json_data)
+# # Параметры подключения к базе данных
+# conn_params = {
+#     'host': 'localhost',
+#     'port': 5432,
+#     'user': 'georg',
+#     'password': 'postgres',
+#     'database': 'db'
+# }
+#
+# # Установка соединения
+# conn = psycopg2.connect(**conn_params)
 
-        print(my_data.datetime)
-        print(my_data.title)
-        print(search_char_x(my_data))
+# Создание курсора
+cursor = conn.cursor()
 
-    except Exception as e:
-        print("Error:", e)
+# # Пример данных для вставки
+# book_data = {
+#     'datetime': 'qwer',
+#     'title': 'qqqq',
+#     'text': 'www'
+# }
+with conn.cursor(cursor_factory=NamedTupleCursor) as curs:
+    # SQL-запрос для вставки данных
+    curs.execute(
+        "INSERT INTO book (datetime, title, text) VALUES ('qwer', 'qqqq', 'www')"
+    )
 
-
-
-def search_char_x(text):
-    my_text = text.text
-    search_char = 'х'
-    count_x = my_text.upper().count(search_char.upper())
-    return count_x
-
-print(qwerty())
-
-# print(search_char_x(qwerty()))
-
-
+    # Подтверждение изменений и закрытие соединения
+    conn.commit()
+    cursor.close()
+    conn.close()
