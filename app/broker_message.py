@@ -8,6 +8,11 @@ from datetime import datetime
 from pydantic import BaseModel
 
 
+data_test = [
+    {'title': 'йцукенгш', 'text': 'хххшрглона цац Х укпх'},
+    {'title': 'ываке', 'text': 'хххнгп'}
+]
+
 class MyModelDictionary(BaseModel):
     datetime: str
     title: str
@@ -74,16 +79,20 @@ async def parse_from_broker_message():
     try:
         my_data = MyModelDictionary.model_validate_json(json_data)
 
-        print(my_data.datetime)
-        print(my_data.title)
-        print(search_char_x(my_data))
+        datetime = my_data.datetime
+        title = my_data.title
+        count_x = search_char_x(my_data)
         await asyncio.sleep(3)
+        return datetime, title, count_x
     except Exception as e:
         print("Error:", e)
 
 
 async def load():
-    await send_messages_to_the_broker(list_of_dictionary(BOOKS))
+    # await send_messages_to_the_broker(list_of_dictionary(BOOKS))
+    await send_messages_to_the_broker(data_test)
+
+
 
 if __name__ == '__main__':
     asyncio.run(load())
