@@ -3,11 +3,11 @@ import os
 import asyncio
 
 from broker_message import parse_from_broker_message
+# from broker_message import load
 
 
 async def sending_to_db():
     result = await parse_from_broker_message()
-
     if result:
         datetime, title, count_x = result
         print("datetime:", datetime)

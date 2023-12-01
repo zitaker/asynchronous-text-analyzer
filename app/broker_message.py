@@ -1,6 +1,8 @@
 import asyncio
 import redis
 import json
+import psycopg2
+import os
 
 # from app.constants import BOOKS
 from constants import BOOKS
@@ -12,6 +14,7 @@ data_test = [
     {'title': 'йцукенгш', 'text': 'хххшрглона цац Х укпх'},
     {'title': 'ываке', 'text': 'хххнгп'}
 ]
+
 
 class MyModelDictionary(BaseModel):
     datetime: str
@@ -82,16 +85,42 @@ async def parse_from_broker_message():
         datetime = my_data.datetime
         title = my_data.title
         count_x = search_char_x(my_data)
+
         await asyncio.sleep(3)
-        return datetime, title, count_x
+        await sending_to_db(datetime, title, count_x)
     except Exception as e:
         print("Error:", e)
 
 
-async def load():
-    # await send_messages_to_the_broker(list_of_dictionary(BOOKS))
-    await send_messages_to_the_broker(data_test)
+async def sending_to_db(datetime, title, count_x):
+    DATABASE_URL = os.getenv('DATABASE_URL')
+    conn = psycopg2.connect(DATABASE_URL)
 
+    datetime_value = datetime
+    title_value = title
+    count_x_value = count_x
+
+
+    try:
+        # print('подключил SQL')
+        query_sending_data = ("INSERT INTO book (datetime, title, count_x) "
+                              "VALUES (%(datetime)s, %(title)s, %(count_x)s)")
+        values = {
+            'datetime': datetime_value,
+            'title': title_value,
+            'count_x': count_x_value
+        }
+        with conn.cursor() as curs:
+            curs.execute(query_sending_data, values)
+            conn.commit()
+        conn.close()
+    except:
+        print('Can`t establish connection to database')
+
+
+async def load():
+    await send_messages_to_the_broker(list_of_dictionary(BOOKS))
+    # return await send_messages_to_the_broker(data_test)
 
 
 if __name__ == '__main__':
