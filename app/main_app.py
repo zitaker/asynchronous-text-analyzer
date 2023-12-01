@@ -10,8 +10,8 @@ def create_app():
 
     @app.on_event("startup")
     async def startup_event():
-        load()
-
+        await load()
+        # pass
     return app
 
 

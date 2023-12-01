@@ -4,8 +4,8 @@ import json
 import psycopg2
 import os
 
-# from app.constants import BOOKS
-from constants import BOOKS
+from app.constants import BOOKS
+# from constants import BOOKS
 from datetime import datetime
 from pydantic import BaseModel
 
@@ -100,9 +100,7 @@ async def sending_to_db(datetime, title, count_x):
     title_value = title
     count_x_value = count_x
 
-
     try:
-        # print('подключил SQL')
         query_sending_data = ("INSERT INTO book (datetime, title, count_x) "
                               "VALUES (%(datetime)s, %(title)s, %(count_x)s)")
         values = {
