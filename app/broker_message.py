@@ -4,8 +4,8 @@ import json
 import psycopg2
 import os
 
-from app.constants import BOOKS
-# from constants import BOOKS
+# from app.constants import BOOKS
+from constants import BOOKS
 from datetime import datetime
 from pydantic import BaseModel
 

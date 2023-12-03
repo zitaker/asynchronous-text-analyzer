@@ -12,6 +12,11 @@ def create_app():
     async def startup_event():
         await load()
         # pass
+
+    @app.get("/stats")
+    def read_root():
+        return {"Hello": "World"}
+
     return app
 
 
