@@ -3,6 +3,7 @@ import asyncio
 
 from fastapi import FastAPI
 from app.broker_message import load
+from app.test import taking_from_db
 
 
 def create_app():
@@ -10,13 +11,13 @@ def create_app():
 
     @app.on_event("startup")
     async def startup_event():
-        await load()
-        # pass
+        # await load()
+        pass
 
     @app.get("/stats")
-    def read_root():
-        return {"Hello": "World"}
-
+    def stats():
+        # return {"Hello": "World"}
+        return taking_from_db()
     return app
 
 

@@ -106,6 +106,7 @@ async def sending_to_db(datetime, title, count_x):
         with conn.cursor() as curs:
             curs.execute(query_sending_data, values)
             conn.commit()
+        curs.close()
         conn.close()
     except:
         print('Can`t establish connection to database')
