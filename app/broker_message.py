@@ -10,16 +10,16 @@ from datetime import datetime
 from pydantic import BaseModel
 
 
-data_test = [
-    {'title': 'йцукенгш', 'text': 'хххшрглона цац Х укпх'},
-    {'title': 'ываке', 'text': 'хххнгп'}
-]
-
-
-class MyModelDictionary(BaseModel):
-    datetime: str
-    title: str
-    text: str
+# data_test = [
+#     {'title': 'йцукенгш', 'text': 'хххшрглона цац Х укпх'},
+#     {'title': 'ываке', 'text': 'хххнгп'}
+# ]
+#
+#
+# class MyModelDictionary(BaseModel):
+#     datetime: str
+#     title: str
+#     text: str
 
 
 def list_of_dictionary(file_path):
@@ -33,93 +33,102 @@ def list_of_dictionary(file_path):
 
         lines = elems.split('\n')
 
-        old_title = lines[0].strip()
-        new_title = old_title.replace('\ufeff', '')
+        # old_title = lines[0].strip()
+        # new_title = old_title.replace('\ufeff', '')
 
-        oldest_body = '\n'.join(lines[1:]).strip()
-        old_body = oldest_body.replace('\xa0', ' ')
-        new_body = old_body.replace('\n', ' ')
-
-        dictionary = {"title": new_title, "text": new_body}
-
-        list_dictionary.append(dictionary)
-    return list_dictionary
-
-
-def date_time():
-    current_time = datetime.now()
-    formatted_time = current_time.strftime("%d.%m.%Y %H:%M:%S.%f")[:-3]
-    return formatted_time
-
-
-async def send_messages_to_the_broker(list_dictionary):
-    for dictionary in list_dictionary:
-        time_dictionary = {"datetime": date_time()}
-        new_dictionary = {**time_dictionary, **dictionary}
-
-        connection = redis.Redis()
-        hash_key = 'hash_key'
-        encoded_message = json.dumps(new_dictionary, ensure_ascii=False).encode('utf-8')
-        connection.set(hash_key, encoded_message)
-
-        await parse_from_broker_message()
-
-
-def search_char_x(text):
-    my_text = text.text
-    search_char = 'х'
-    count_x = my_text.upper().count(search_char.upper())
-    return count_x
-
-
-async def parse_from_broker_message():
-    connection = redis.Redis()
-    hash_key = 'hash_key'
-    retrieved_message = connection.get(hash_key)
-    decoded_message = json.loads(retrieved_message.decode('utf-8'))
-
-    json_data = json.dumps(decoded_message, ensure_ascii=False)
-    try:
-        my_data = MyModelDictionary.model_validate_json(json_data)
-
-        datetime = my_data.datetime
-        title = my_data.title
-        count_x = search_char_x(my_data)
-
-        await asyncio.sleep(3)
-        await sending_to_db(datetime, title, count_x)
-    except Exception as e:
-        print("Error:", e)
-
-
-async def sending_to_db(datetime, title, count_x):
-    DATABASE_URL = os.getenv('DATABASE_URL')
-    conn = psycopg2.connect(DATABASE_URL)
-
-    datetime_value = datetime
-    title_value = title
-    count_x_value = count_x
-
-    try:
-        query_sending_data = ("INSERT INTO book (datetime, title, count_x) "
-                              "VALUES (%(datetime)s, %(title)s, %(count_x)s)")
-        values = {
-            'datetime': datetime_value,
-            'title': title_value,
-            'count_x': count_x_value
-        }
-        with conn.cursor() as curs:
-            curs.execute(query_sending_data, values)
-            conn.commit()
-        conn.close()
-    except:
-        print('Can`t establish connection to database')
-
-
-async def load():
-    await send_messages_to_the_broker(list_of_dictionary(BOOKS))
-    # return await send_messages_to_the_broker(data_test)
+        # oldest_body = '\n'.join(lines[1:]).strip()
+        # old_body = oldest_body.replace('\xa0', ' ')
+        # new_body = old_body.replace('\n', ' ')
+        ######
+        lines = [line.strip() for line in elems.splitlines() if line.strip()]
+        for line in lines:
+            old_title = lines[0].strip()
+            # dictionary = {"title": old_title, "text": oldest_body}
+            print(old_title)
+            # print(f"{line}{'11111111111111111111111'}")
+        #####
+    #     dictionary = {"title": new_title, "text": old_body}
+    #     list_dictionary.append(f"{dictionary}")
+    # return list_dictionary
 
 
 if __name__ == '__main__':
-    asyncio.run(load())
+    asyncio.run(list_of_dictionary(BOOKS))
+
+# def date_time():
+#     current_time = datetime.now()
+#     formatted_time = current_time.strftime("%d.%m.%Y %H:%M:%S.%f")[:-3]
+#     return formatted_time
+#
+#
+# async def send_messages_to_the_broker(list_dictionary):
+#     for dictionary in list_dictionary:
+#         time_dictionary = {"datetime": date_time()}
+#         new_dictionary = {**time_dictionary, **dictionary}
+#
+#         connection = redis.Redis()
+#         hash_key = 'hash_key'
+#         encoded_message = json.dumps(new_dictionary, ensure_ascii=False).encode('utf-8')
+#         connection.set(hash_key, encoded_message)
+#
+#         await parse_from_broker_message()
+#
+#
+# def search_char_x(text):
+#     my_text = text.text
+#     search_char = 'х'
+#     count_x = my_text.upper().count(search_char.upper())
+#     return count_x
+#
+#
+# async def parse_from_broker_message():
+#     connection = redis.Redis()
+#     hash_key = 'hash_key'
+#     retrieved_message = connection.get(hash_key)
+#     decoded_message = json.loads(retrieved_message.decode('utf-8'))
+#
+#     json_data = json.dumps(decoded_message, ensure_ascii=False)
+#     try:
+#         my_data = MyModelDictionary.model_validate_json(json_data)
+#
+#         datetime = my_data.datetime
+#         title = my_data.title
+#         count_x = search_char_x(my_data)
+#
+#         await asyncio.sleep(3)
+#         await sending_to_db(datetime, title, count_x)
+#     except Exception as e:
+#         print("Error:", e)
+#
+#
+# async def sending_to_db(datetime, title, count_x):
+#     DATABASE_URL = os.getenv('DATABASE_URL')
+#     conn = psycopg2.connect(DATABASE_URL)
+#
+#     datetime_value = datetime
+#     title_value = title
+#     count_x_value = count_x
+#
+#     try:
+#         query_sending_data = ("INSERT INTO book (datetime, title, count_x) "
+#                               "VALUES (%(datetime)s, %(title)s, %(count_x)s)")
+#         values = {
+#             'datetime': datetime_value,
+#             'title': title_value,
+#             'count_x': count_x_value
+#         }
+#         with conn.cursor() as curs:
+#             curs.execute(query_sending_data, values)
+#             conn.commit()
+#         conn.close()
+#     except:
+#         print('Can`t establish connection to database')
+#
+#
+# async def load():
+#     await send_messages_to_the_broker(list_of_dictionary(BOOKS))
+#     # return await send_messages_to_the_broker(data_test)
+#
+#
+# if __name__ == '__main__':
+#     asyncio.run(load())
