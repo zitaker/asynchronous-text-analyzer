@@ -114,7 +114,6 @@ async def sending_to_db(datetime, title, count_x):
 
 async def load():
     await send_messages_to_the_broker(list_of_dictionary(BOOKS))
-    # return await send_messages_to_the_broker(data_test)
 
 
 if __name__ == '__main__':

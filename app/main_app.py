@@ -2,8 +2,8 @@ import uvicorn
 import asyncio
 
 from fastapi import FastAPI
-from app.broker_message import load
-from app.test import taking_from_db
+from app.endpoint_uploading_and_sending import load
+from app.result_endpoint import taking_from_db
 
 
 def create_app():
@@ -15,9 +15,8 @@ def create_app():
         pass
 
     @app.get("/stats")
-    def stats():
-        # return {"Hello": "World"}
-        return taking_from_db()
+    async def stats():
+        return await taking_from_db()
     return app
 
 
