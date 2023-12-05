@@ -14,6 +14,10 @@ def create_app():
         # await load()
         pass
 
+    @app.get("/begin")
+    async def begin():
+        await load()
+
     @app.get("/stats")
     async def stats():
         return await taking_from_db()

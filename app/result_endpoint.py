@@ -2,11 +2,10 @@ import psycopg2
 import os
 import asyncio
 
+DATABASE_URL = os.getenv('DATABASE_URL')
+
 
 async def taking_from_db():
-    DATABASE_URL = os.getenv('DATABASE_URL')
-    conn = psycopg2.connect(DATABASE_URL)
-
     """
     query = value(datetime), value(title), value(x_avg_count_in_line),
     1) datetime = первое значение datetime по title, так же first_title_datetime.
@@ -14,6 +13,7 @@ async def taking_from_db():
     3) x_avg_count_in_line = сумма count_x / количество одинаковых title.
     """
     try:
+        conn = psycopg2.connect(DATABASE_URL)
         query = ("WITH FirstTitleDateTime AS (SELECT title, MIN(datetime) AS min_datetime FROM book GROUP BY title)"
                          "SELECT ftd.min_datetime AS first_title_datetime, b.title, ROUND(SUM(b.count_x) / COUNT(b.title), 3)"
                          "AS x_avg_count_in_line FROM book b JOIN FirstTitleDateTime ftd ON b.title = ftd.title GROUP BY b.title,"

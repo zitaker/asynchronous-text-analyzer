@@ -9,6 +9,8 @@ from app.constants import BOOKS
 from datetime import datetime
 from pydantic import BaseModel
 
+DATABASE_URL = os.getenv('DATABASE_URL')
+
 
 class MyModelDictionary(BaseModel):
     datetime: str
@@ -88,7 +90,6 @@ async def parse_from_broker_message():
 
 
 async def sending_to_db(datetime, title, count_x):
-    DATABASE_URL = os.getenv('DATABASE_URL')
     conn = psycopg2.connect(DATABASE_URL)
 
     datetime_value = datetime
