@@ -39,7 +39,6 @@ async def taking_from_db():
 
         curs.close()
         conn.close()
-        print(result)
         return result
     except Exception as error:
         print('Can`t establish connection to database')

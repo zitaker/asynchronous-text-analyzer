@@ -5,6 +5,8 @@ import subprocess
 from fastapi import FastAPI
 from app.endpoint_uploading_and_sending import load
 from app.result_endpoint import taking_from_db
+# from endpoint_uploading_and_sending import load
+# from result_endpoint import taking_from_db
 
 
 def create_app():

@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS book;
+--DROP TABLE IF EXISTS book;
 
 CREATE TABLE book (
     datetime VARCHAR(255) NOT NULL,
