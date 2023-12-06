@@ -1,5 +1,6 @@
 import uvicorn
 import asyncio
+import subprocess
 
 from fastapi import FastAPI
 from app.endpoint_uploading_and_sending import load
@@ -11,8 +12,8 @@ def create_app():
 
     @app.on_event("startup")
     async def startup_event():
-        # await load()
-        pass
+        global redis_server_process
+        redis_server_process = subprocess.Popen(["redis-server"])
 
     @app.get("/begin")
     async def begin():
