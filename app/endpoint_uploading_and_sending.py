@@ -8,7 +8,9 @@ from app.constants import BOOKS
 # from constants import BOOKS
 from datetime import datetime
 from pydantic import BaseModel
+from dotenv import load_dotenv
 
+load_dotenv()
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 
@@ -36,7 +38,8 @@ def list_of_dictionary(file_path):
         old_body = oldest_body.replace('\xa0', ' ')
 
         old_lines_body = old_body.splitlines()
-        body_without_empty_lines = [line for line in old_lines_body if line.strip()]
+        body_without_empty_lines = \
+            [line for line in old_lines_body if line.strip()]
         for new_body in body_without_empty_lines:
             dictionary = {"title": new_title, "text": new_body}
             list_dictionary.append(dictionary)
@@ -56,7 +59,8 @@ async def send_messages_to_the_broker(list_dictionary):
 
         connection = redis.Redis()
         hash_key = 'hash_key'
-        encoded_message = json.dumps(new_dictionary, ensure_ascii=False).encode('utf-8')
+        encoded_message = json.dumps(new_dictionary,
+                                     ensure_ascii=False).encode('utf-8')
         connection.set(hash_key, encoded_message)
 
         await parse_from_broker_message()
@@ -78,7 +82,7 @@ async def parse_from_broker_message():
     json_data = json.dumps(decoded_message, ensure_ascii=False)
     try:
         my_data = MyModelDictionary.model_validate_json(json_data)
-
+        print(my_data)
         datetime = my_data.datetime
         title = my_data.title
         count_x = search_char_x(my_data)
@@ -90,13 +94,12 @@ async def parse_from_broker_message():
 
 
 async def sending_to_db(datetime, title, count_x):
-    conn = psycopg2.connect(DATABASE_URL)
-
     datetime_value = datetime
     title_value = title
     count_x_value = count_x
 
     try:
+        conn = psycopg2.connect(DATABASE_URL)
         query_sending_data = ("INSERT INTO book (datetime, title, count_x) "
                               "VALUES (%(datetime)s, %(title)s, %(count_x)s)")
         values = {
@@ -109,8 +112,9 @@ async def sending_to_db(datetime, title, count_x):
             conn.commit()
         curs.close()
         conn.close()
-    except:
+    except Exception as error:
         print('Can`t establish connection to database')
+        print(error)
 
 
 async def load():

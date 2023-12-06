@@ -3,3 +3,6 @@ startup:
 
 build:
 	./build.sh
+
+flake8:
+	poetry run flake8 app
