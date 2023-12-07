@@ -1,31 +1,17 @@
 version: '3'
+
 services:
-  db:
-    image: postgres
-    volumes:
-      - ./data/db:/var/lib/postgresql/data
+  postgres:
+    image: postgres:latest
     environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_HOST=localhost
-      - POSTGRES_PORT=5432
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
     ports:
-      - "8000:8888"
+      - "5433:5432"
     volumes:
-      - ./app:/app
-    environment:
-      - POSTGRES_NAME=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_HOST=db
-      - POSTGRES_PORT=5432
-#      - UVICORN_CMD=uvicorn app.main_app:app --host 0.0.0.0 --port 8888 --reload
-#      - UVICORN_CMD=uvicorn app.main_app:create_app --host 0.0.0.0 --port 8888 --reload
-      - UVICORN_CMD=uvicorn main_app:create_app --host 0.0.0.0 --port 8888 --reload
-    depends_on:
-      - db
+      - postgres_data:/var/lib/postgresql/data
+      - ./path/to/your/.env:/app/.env  # Относительный путь к .env файлу
+
+volumes:
+  postgres_data:

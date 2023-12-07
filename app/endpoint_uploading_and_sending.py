@@ -4,15 +4,15 @@ import json
 import psycopg2
 import os
 
-from app.constants import BOOKS
-# from constants import BOOKS
+# from app.constants import BOOKS
+from constants import BOOKS
 from datetime import datetime
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
 load_dotenv()
-DATABASE_URL = os.getenv('DATABASE_URL')
-
+# DATABASE_URL = os.getenv('DATABASE_URL')
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://myuser:mypassword@localhost:5433/mydatabase")
 
 class MyModelDictionary(BaseModel):
     datetime: str
