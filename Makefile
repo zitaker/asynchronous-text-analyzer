@@ -1,8 +1,8 @@
-startup:
-	uvicorn app.main:create_app --host 0.0.0.0 --port 8888 --reload
-
-build:
-	./build.sh
+install:
+	poetry install
 
 flake8:
 	poetry run flake8 app
+
+docker-start:
+	sudo docker-compose up --build

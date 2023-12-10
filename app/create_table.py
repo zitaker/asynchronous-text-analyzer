@@ -8,7 +8,7 @@ load_dotenv()
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 
-async def creating_table():
+async def create_table():
     try:
         conn = psycopg2.connect(DATABASE_URL)
         cursor = conn.cursor()
@@ -31,4 +31,4 @@ async def creating_table():
 
 
 if __name__ == '__main__':
-    asyncio.run(creating_table())
+    asyncio.run(create_table())
