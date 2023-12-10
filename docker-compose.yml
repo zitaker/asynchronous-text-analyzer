@@ -1,17 +1,61 @@
-version: '3'
+#version: '3.5'
+#
+#services:
+#  db_auth:
+#    container_name: postgres
+#    ports:
+#      - "5435:5432"
+#    environment:
+#      - POSTGRES_PASSWORD=postgres
+#      - POSTGRES_USER=postgres
+#    image: postgres:14.3-alpine
+
+
+#version: '3.5'
+#
+#services:
+#  db_auth:
+#    container_name: postgres
+#    ports:
+#      - "5435:5432"
+#    environment:
+#      - POSTGRES_PASSWORD=postgres
+#      - POSTGRES_USER=postgres
+#    image: postgres:14.3-alpine
+#
+#  service_fastapi:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    container_name: container_fastapi
+#    ports:
+#      - "8888:8888"
+#    depends_on:
+#      - db_auth
+
+
+
+version: '3.5'
 
 services:
-  postgres:
-    image: postgres:latest
-    environment:
-      POSTGRES_DB: mydatabase
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
+  db_auth:
+    container_name: postgres
     ports:
-      - "5433:5432"
+      - "5435:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+    image: postgres:14.3-alpine
+    command: ["postgres", "-c", "max_connections=3000"]
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./path/to/your/.env:/app/.env  # Относительный путь к .env файлу
+      - ./db.sql:/docker-entrypoint-initdb.d/db.sql
 
-volumes:
-  postgres_data:
+  service_fastapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: container_fastapi
+    ports:
+      - "8888:8888"
+    depends_on:
+      - db_auth

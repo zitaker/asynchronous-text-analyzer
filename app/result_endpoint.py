@@ -4,8 +4,8 @@ import asyncio
 from dotenv import load_dotenv
 
 load_dotenv()
-# DATABASE_URL = os.getenv('DATABASE_URL')
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://myuser:mypassword@localhost:5433/mydatabase")
+DATABASE_URL = os.getenv('DATABASE_URL')
+
 
 async def taking_from_db():
     """
