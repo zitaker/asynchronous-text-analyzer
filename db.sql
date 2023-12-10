@@ -6,4 +6,6 @@ CREATE TABLE book (
     count_x NUMERIC
 );
 
+INSERT INTO book (datetime, title, count_x) VALUES ('15.11.2023 15:00:25.001', 'Arya', 55);
+
 SELECT * FROM book;

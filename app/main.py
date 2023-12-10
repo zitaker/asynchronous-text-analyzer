@@ -7,6 +7,7 @@ from fastapi import FastAPI
 # from app.result_endpoint import taking_from_db
 from endpoint_uploading_and_sending import load
 from result_endpoint import taking_from_db
+from creating_table import creating_table
 
 
 def create_app():
@@ -16,6 +17,7 @@ def create_app():
     async def startup_event():
         global redis_server_process
         redis_server_process = subprocess.Popen(["redis-server"])
+        return await creating_table()
 
     @app.get("/begin")
     async def begin():
