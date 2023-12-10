@@ -7,7 +7,7 @@ load_dotenv()
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 
-async def taking_from_db():
+async def taking_from_database():
     """
     query = value(datetime), value(title), value(x_avg_count_in_line),
     1) datetime = первое значение datetime по title, так
@@ -46,4 +46,4 @@ async def taking_from_db():
 
 
 if __name__ == '__main__':
-    asyncio.run(taking_from_db())
+    asyncio.run(taking_from_database())

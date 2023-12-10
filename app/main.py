@@ -3,8 +3,8 @@ import asyncio
 import subprocess
 
 from fastapi import FastAPI
-from endpoint_uploading_and_sending import load
-from result_endpoint import taking_from_db
+from endpoint_uploading_and_sending import load_data
+from result_endpoint import taking_from_database
 from create_table import create_table
 
 
@@ -17,13 +17,13 @@ def create_app():
         redis_server_process = subprocess.Popen(["redis-server"])
         return await create_table()
 
-    @app.get("/begin")
-    async def begin():
-        await load()
+    @app.get("/endpoint")
+    async def get_endpoint():
+        await load_data()
 
     @app.get("/stats")
-    async def stats():
-        return await taking_from_db()
+    async def get_stats():
+        return await taking_from_database()
     return app
 
 

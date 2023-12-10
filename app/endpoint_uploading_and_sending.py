@@ -13,13 +13,13 @@ load_dotenv()
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 
-class MyModelDictionary(BaseModel):
+class ModelDictionary(BaseModel):
     datetime: str
     title: str
     text: str
 
 
-def list_of_dictionary(file_path):
+def get_list_of_dictionary(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         file_contents = file.read()
 
@@ -45,15 +45,15 @@ def list_of_dictionary(file_path):
     return list_dictionary
 
 
-def date_time():
+def get_datetime():
     current_time = datetime.now()
     formatted_time = current_time.strftime("%d.%m.%Y %H:%M:%S.%f")[:-3]
     return formatted_time
 
 
-async def send_messages_to_the_broker(list_dictionary):
+async def send_message_to_the_broker(list_dictionary):
     for dictionary in list_dictionary:
-        time_dictionary = {"datetime": date_time()}
+        time_dictionary = {"datetime": get_datetime()}
         new_dictionary = {**time_dictionary, **dictionary}
 
         connection = redis.Redis()
@@ -62,17 +62,17 @@ async def send_messages_to_the_broker(list_dictionary):
                                      ensure_ascii=False).encode('utf-8')
         connection.set(hash_key, encoded_message)
 
-        await parse_from_broker_message()
+        await parse_broker_message()
 
 
-def search_char_x(text):
+def search_symbols_x(text):
     my_text = text.text
     search_char = 'х'
     count_x = my_text.upper().count(search_char.upper())
     return count_x
 
 
-async def parse_from_broker_message():
+async def parse_broker_message():
     connection = redis.Redis()
     hash_key = 'hash_key'
     retrieved_message = connection.get(hash_key)
@@ -80,19 +80,19 @@ async def parse_from_broker_message():
 
     json_data = json.dumps(decoded_message, ensure_ascii=False)
     try:
-        my_data = MyModelDictionary.model_validate_json(json_data)
-        print(my_data)
+        my_data = ModelDictionary.model_validate_json(json_data)
+
         datetime = my_data.datetime
         title = my_data.title
-        count_x = search_char_x(my_data)
+        count_x = search_symbols_x(my_data)
 
         await asyncio.sleep(3)
-        await sending_to_db(datetime, title, count_x)
+        await send_to_the_database(datetime, title, count_x)
     except Exception as e:
-        print("Error:", e)
+        return {'error': f'{str(e)}'}
 
 
-async def sending_to_db(datetime, title, count_x):
+async def send_to_the_database(datetime, title, count_x):
     datetime_value = datetime
     title_value = title
     count_x_value = count_x
@@ -111,14 +111,13 @@ async def sending_to_db(datetime, title, count_x):
             conn.commit()
         curs.close()
         conn.close()
-    except Exception as error:
-        print('Can`t establish connection to database')
-        print(error)
+    except Exception as e:
+        return {'Can`t establish connection to database': f'error: {str(e)}'}
 
 
-async def load():
-    await send_messages_to_the_broker(list_of_dictionary(BOOKS))
+async def load_data():
+    await send_message_to_the_broker(get_list_of_dictionary(BOOKS))
 
 
 if __name__ == '__main__':
-    asyncio.run(load())
+    asyncio.run(load_data())
