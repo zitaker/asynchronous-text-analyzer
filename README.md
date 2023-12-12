@@ -31,7 +31,7 @@ if name == 'main':
 
 Application:
 
-provides an endpoint for uploading and sending line-by-line source data messages of the form {"datetime" to the broker topic": "15.11.2023 15:00:25.001", " title": "Very fun book", "text": "...Rofl...lol../n..ololo..." } with an interval of 3 seconds
+provides an endpoint for uploading and sending line-by-line source data messages of the form ``` {"datetime" to the broker topic": "15.11.2023 15:00:25.001", " title": "Very fun book", "text": "...Rofl...lol../n..ololo..." } ``` with an interval of 3 seconds
 
 retrieves the source data from the message broker topic
 
@@ -39,7 +39,7 @@ calculates the number of occurrences of the letter "X" in lines of text from the
 
 saves the result to the database
 
-provides an endpoint for getting the result from the database in the form of [{"datetime": "15.11.2023 15:00:25.001", " title": "Very fun book", "x_avg_count_in_line": 0.012}, {"datetime": "18.01.2023 12:00:25.001", " title": "Other very fun book", "x_avg_count_in_line": 0.032} ] where x_avg_count_in_line is the average value of the number of occurrences for each of the uploaded texts
+provides an endpoint for getting the result from the database in the form of ``` [{"datetime": "15.11.2023 15:00:25.001", " title": "Very fun book", "x_avg_count_in_line": 0.012}, {"datetime": "18.01.2023 12:00:25.001", " title": "Other very fun book", "x_avg_count_in_line": 0.032} ] ``` where x_avg_count_in_line is the average value of the number of occurrences for each of the uploaded texts
 
 Requirements:
 
