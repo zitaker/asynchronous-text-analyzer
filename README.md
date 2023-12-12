@@ -1,4 +1,4 @@
-## Test task for Python backend developer
+## Test task for Python backend-developer
 
 #### Given:
 The file text.txt
