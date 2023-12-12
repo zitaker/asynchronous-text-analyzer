@@ -8,6 +8,7 @@ Create an asynchronous Fast API application based on a template:
 import uvicorn
 from fastapi import FastAPI
 
+```
 def create_app():
     app = FastAPI(docs_url='/')
 
@@ -26,6 +27,7 @@ def main():
 
 if name == 'main':
     main()
+```
 
 Application:
 
