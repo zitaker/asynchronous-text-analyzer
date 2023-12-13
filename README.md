@@ -50,3 +50,7 @@ provides an endpoint for getting the result from the database in the form of ```
 5. Wrap the application in Docker
 <hr>
 
+#### Install:
+1. Download the project.
+2. Go to the root directory of the project.
+3. Assemble the docker container and run it using the command ```docker-compose up --build```.
