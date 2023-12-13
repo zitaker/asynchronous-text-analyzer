@@ -54,4 +54,4 @@ provides an endpoint for getting the result from the database in the form of ```
 1. Download the project.
 2. Go to the root directory of the project.
 3. Assemble the docker container and run it using the command ```docker-compose up --build```.
-4. Go to the address ```0.0.0.0:8888```
+4. The application is available at ```0.0.0.0:8888```
