@@ -48,3 +48,5 @@ provides an endpoint for getting the result from the database in the form of ```
 3. Use any message broker
 4. Use Pedantic for data verification and parsing
 5. Wrap the application in Docker
+<hr>
+
