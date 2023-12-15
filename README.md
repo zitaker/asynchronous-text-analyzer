@@ -60,6 +60,7 @@ provides an endpoint for getting the result from the database in the form of ```
 4. The application is available at ```0.0.0.0:8888```
    
 ![Screenshot from 2023-12-15 09-34-42](https://github.com/zitaker/asynchronous-text-analyzer/assets/92075508/b1157f51-e464-4fd6-a297-98ec6f6a0325)
+
 ![Screenshot from 2023-12-15 12-17-39](https://github.com/zitaker/asynchronous-text-analyzer/assets/92075508/88d8121c-de34-4e3a-9eb3-7242688d69c3)
 
 
